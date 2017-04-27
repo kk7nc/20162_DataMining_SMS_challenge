@@ -8,6 +8,11 @@ f = open('train.txt', 'r')
 g = open('test.txt','r')
 test= g.read().splitlines()
 g.close()
+g=open('spam-harm-dict.txt','r')
+e=g.read();
+dictHarmSpam=e.split(' ');
+print set(dictHarmSpam).__len__()
+g.close()
 def getInputOneHotVector(data,dict):
     inputY=[]
     inputWord=[];
@@ -20,6 +25,11 @@ def getInputOneHotVector(data,dict):
     for x in inputWord:
         v=[]
         for xx in dict:
+            if xx in x:
+                v.append(1)
+            else:
+                v.append(0)
+        for xx in dictHarmSpam:
             if xx in x:
                 v.append(1)
             else:

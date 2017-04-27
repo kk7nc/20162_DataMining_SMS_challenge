@@ -47,11 +47,12 @@ def aRunProcess(dict):
     trainY=inputY[:LTrain]
     
 
-    from sklearn.naive_bayes import GaussianNB
-    gnb = GaussianNB()
-    gnb.fit(trainX, trainY)
-    res=gnb.predict(testX)
-    print res
+    from sklearn.svm import SVC
+    clf = SVC(C=30, kernel='rbf',decision_function_shape='ovr', gamma=0.048)
+    #clf = SVC(C=4.7, kernel='sigmoid',decision_function_shape='ovr', gamma=0.048,coef0=0.525)
+    #clf = SVC(C=5, kernel='poly',decision_function_shape='ovr', gamma=0.048,coef0=200,degree=2)
+    clf.fit(trainX, trainY)
+    res=clf.predict(testX)
     #sol=(res==testY)
     #return sol.sum()
     return res

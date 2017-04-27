@@ -30,6 +30,8 @@ def getInputOneHotVector(data,dict):
 LTrain=100
 nTimes=1
 t= f.read().splitlines()
+#t.extend(t);
+print t.__len__()
 f.close()
 nTrain=t.__len__()
 dict=[]
@@ -47,11 +49,10 @@ def aRunProcess(dict):
     trainY=inputY[:LTrain]
     
 
-    from sklearn.naive_bayes import GaussianNB
-    gnb = GaussianNB()
-    gnb.fit(trainX, trainY)
-    res=gnb.predict(testX)
-    print res
+    from sklearn import neighbors
+    knn = neighbors.KNeighborsClassifier(3, metric='jaccard')
+    knn.fit(trainX, trainY)
+    res=knn.predict(testX)
     #sol=(res==testY)
     #return sol.sum()
     return res
