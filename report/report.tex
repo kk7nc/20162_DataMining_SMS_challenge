@@ -1,0 +1,91 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+%\usepackage{amssymb}
+\usepackage{graphicx}
+%\usepackage{cases}
+\usepackage{fancybox}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage[nottoc]{tocbibind}
+\usepackage{indentfirst}
+\usepackage[english]{babel}
+\usepackage{float}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}  
+\usepackage[left=3cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
+%\lstset{
+   %keywords={break,case,catch,continue,else,elseif,end,for,function,
+   %   global,if,otherwise,persistent,return,switch,try,while},
+%   language = Java,
+%   basicstyle=\ttfamily \fontsize{12}{15}\selectfont,   
+	% numbers=left,
+%   frame=lrtb,
+%tabsize=3
+%}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=red 
+}
+\setlength{\parskip}{0.6em}
+\addto\captionsenglish{%
+ \renewcommand\chaptername{Phần}
+ \renewcommand{\contentsname}{Mục lục} 
+ \renewcommand{\listtablename}{Danh sách bảng}
+ \renewcommand{\listfigurename}{Danh sách hình vẽ}
+ \renewcommand{\tablename}{Bảng}
+ \renewcommand{\figurename}{Hình}
+ \renewcommand{\bibname}{Tài liệu tham khảo}
+}
+
+\newtheorem{definition}{Định nghĩa}[chapter]
+%\newtheorem{lema}{Bổ đề}[chapter]
+%\newtheorem{theorem}{Định lý}[chapter]
+
+\begin{document}
+\thispagestyle{empty}
+\thisfancypage{
+\setlength{\fboxrule}{1pt}
+\doublebox}{}
+
+\begin{center}
+{\fontsize{16}{19}\fontfamily{cmr}\selectfont TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI\\
+VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG}\\
+\textbf{------------*******---------------}\\[1cm]
+\includegraphics[scale=0.13]{hust.jpg}\\[1.3cm]
+{\fontsize{32}{43}\fontfamily{cmr}\selectfont BÁO CÁO}\\[0.1cm]
+{\fontsize{38}{45}\fontfamily{cmr}\fontseries{b}\selectfont MÔN HỌC}\\[0.2cm]
+{\fontsize{20}{24}\fontfamily{phv}\selectfont Khai phá dữ liệu}\\[0.3cm]
+{\fontsize{18}{20}\fontfamily{cmr}\selectfont \emph{Đề tài:  Vietnamese SMS Spam Filter Datamining Challenge }}\\[2cm]
+\hspace{-5cm}\fontsize{14}{16}\fontfamily{cmr}\selectfont \textbf{Nhóm sinh viên thực hiện:}\\[0.1cm] 
+\begin{longtable}{l c c}
+Nguyễn Tuấn Đạt & 20130856 & CNTT2.02-K58 \\
+Nguyễn Đức Mạnh & 20131518 & \\
+Phan Anh Tú &   20134501 & CNTT2.01-K58\\
+\end{longtable}
+
+\hspace{-6cm}\fontsize{14}{16}\fontfamily{cmr}\selectfont \textbf{Giảng viên hướng dẫn:}\\[0.1cm]
+\hspace{-2.7cm}\fontsize{14}{16}\fontfamily{cmr}\selectfont TS. Trịnh Anh Phúc \\[3.0cm]
+\fontsize{16}{19}\fontfamily{cmr}\selectfont Hà Nội 5--2017
+\end{center}
+\newpage
+\pdfbookmark{\contentsname}{toc}
+\tableofcontents
+%\listoftables
+\listoffigures
+\chapter{Mở đầu}
+\chapter{Cơ sở lý thuyết}
+\chapter{Ứng dụng}
+
+\begin{thebibliography}{9}
+
+
+\end{thebibliography}
+
+
+\end{document}
