@@ -92,9 +92,72 @@ Trong challenge này, bọn em thử nghiệm qua nhiều phương pháp (SVM,Na
 \section{K-nearest neighbors}
 \subsection{Cơ sở lý thuyết}
 \chapter{Đánh giá}
-\section{Naive Bayes}
-\section{K-nearest neighbors}
+Vì tập dữ liệu khá nhỏ nên phương pháp bọn em sử dụng để đánh giá mô hình là : repeated hold-out. Chúng em thực hiện phương pháp hold out(80 train-20 test) 100 lần sau đó tính trung bình để đánh giá mô hình học máy.\\
 
+Về lựa chọn tham số cho từng phương pháp học máy bọn em sử dụng phương pháp hold-out. Cụ thể sẽ được trình bày trong hai mục dưới đây
+\section{Naive Bayes}
+Với phương pháp naive-bayes bọn em thực hiện đánh giá trên 3 mô hình:
+\begin{itemize}
+\item Phương pháp naive bayes đơn thuần
+\item Phương pháp naive bayes với tập từ điển các từ có xác suất harm spam cao build từ tập train.
+\item Phương pháp naive bayes với tập train được thêm dữ liệu
+\end{itemize}
+\subsection{Tập từ điển harm spam}
+Bọn thực hiện build một tập từ điển harm spam gồm 60 từ được lọc ra từ tập train. Nhưng từ trong từ điển là những từ thoản mãn 2 điều kiện sau:
+Xét một từ x gọi CX là  tập câu chứa từ x
+\begin{itemize}
+\item $P_{CX}['Harm'] or P_{CX}['Spam'] >0.7$
+\item $tf(x,d) >0.4$ tần số xuất hiện của từ đó trong 1 văn bản lớn hơn 40 \%
+\end{itemize}
+Kết quả cụ thể của ba mô hình thể hiện trong bảng sau:
+\begin{longtable}{|c|c|}
+\hline 
+Mô hình & Độ chính xác \\ \hline
+naive-bayes normal & 92.9\\ \hline
+navie-bayes with dict & 92.1 \\ \hline
+navie-bayes more data & 75.375\\ \hline
+\end{longtable}
+
+
+\section{K-nearest neighbors}
+Với phương pháp KNN bọn em thực hiện chọn tham số mô hình (k,độ đo). 
+\begin{longtable}{|c|c|c|c|c|c|}
+\hline
+Hàm khoảng cách & k=1 & k=3 & k=5 & k=7 & k=9\\
+\hline
+euclidean & 0.561 &0.495 &0.485&0.4955&0.485 \\
+\hline 
+jaccard & 0.9 & 0.9095 & 0.905 & 0.8995 & 0.879 \\ \hline
+matching & 0.5655 & 0.4835 &  0.501 &0.4885 & 0.489 \\ \hline 
+dice &0.8825 & 0.904 & 0.902 & 0.8955 & 0.8855 \\ \hline
+kulsinski&  0.869 &0.8935& 0.878& 0.882 &0.875 \\ \hline 
+rogerstanimoto&  0.5865& 0.483& 0.495 &0.4995& 0.487 \\ \hline
+russellrao&  0.8495& 0.8695& 0.8505  &0.8505& 0.8505 \\ \hline 
+sokalmichener& 0.5595& 0.505 &0.483 &0.492 &0.4755 \\ \hline 
+sokalsneath& 0.896& 0.919  & 0.9075& 0.892 & 0.889 \\ \hline
+\end{longtable}
+
+Một vài định nghĩa sử dụng cho các hàm khoảng cách dưới đây:
+\begin{itemize}
+\item N số chiều của vector
+\item NTT số chiều mà cả hai giá trị đều bằng 1
+\item NTF số chiều mà giá trị của vector 1 bằng 1 vector 2 bằng 0
+\item NFT số chiều mà giá trị của vector 2 băng 1 vector 1 bằng 0
+\item NFF số chiều mà cả hai giá trị đều bằng 0
+\item NNEQ NNEQ=NTF+NFT
+\item NNZ NNZ=NTF+NFT+NTT 
+\end{itemize}
+Định nghĩa các hàm khoảng cách:
+\begin{itemize}
+\item euclidean : $\sqrt{\sum_1^N (x-y)^2}$
+\item “jaccard”	JaccardDistance	NNEQ / NNZ
+\item “matching”	MatchingDistance	NNEQ / N
+\item “dice”	DiceDistance	NNEQ / (NTT + NNZ)
+\item “kulsinski”	KulsinskiDistance	(NNEQ + N - NTT) / (NNEQ + N)\item “rogerstanimoto”	RogersTanimotoDistance	2 * NNEQ / (N + NNEQ)
+\item “russellrao”	RussellRaoDistance	NNZ / N
+\item “sokalmichener”	SokalMichenerDistance	2 * NNEQ / (N + NNEQ)
+\item “sokalsneath”	SokalSneathDistance	NNEQ / (NNEQ + 0.5 * NTT)
+\end{itemize}
 \begin{thebibliography}{9}
 
 
