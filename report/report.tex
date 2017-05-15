@@ -80,13 +80,27 @@ Phan Anh Tú &   20134501 & CNTT2.01-K58\\
 \listoffigures
 
 \chapter{Tổng quan}
-\section{Dữ liệu đầu vào}
-Đầu vào của dữ liệu là tập \\
-Trong challenge này, bọn em thử nghiệm qua nhiều phương pháp (SVM,Naive Bayes,KNN,Random forest, Word2Vec,...). Nhưng hai phương pháp cho hiệu quả nhất đó là Naive Bayes và K-nearest neighbors vì vậy trong báo cáo này bọn em sẽ trình bày 2 phương pháp trên.
+Trong challenge này, bọn em thử nghiệm qua nhiều phương pháp (SVM, Naive Bayes, KNN, Random forest, Word2Vec,...). Nhưng hai phương pháp cho hiệu quả nhất đó là Naive Bayes và K-nearest neighbors vì vậy trong báo cáo này bọn em sẽ trình bày 2 phương pháp trên.
+\section{Bài toán lọc tin nhắn Spam}
+Tin nhắn spam là những tin nhắn vô nghĩa mà người sử dụng cảm thấy khó chịu khi nhận nó. \\
+
+Mô hình nhận đầu vào là một tin nhắn văn bản và trả về kết quả dự đoán xem tin nhắn đó có phải là tin rác hoặc không? Độ chính xác của mô hình số lượng tin được dự đoán đúng.
+\section{Dữ liệu}
+Đầu vào của dữ liệu là tập các tin nhắn đã được chuẩn hóa(bỏ dấu,loại bỏ thông tin thừa...). \\
 \begin{itemize}
-\item Phương pháp
+\item Kích thước dữ liệu 100 tin tập train, 300 tin tập test.
+\item Tập train gồm 2 nhãn 1(spam),-1(harm)
 \end{itemize}
+
 \section{Chuẩn hóa vector đầu vào cho bài toán phân loại}
+Dựa vào tập train đầu vào chúng em build một từ điển gốm những từ xuất phát trong tập train. Từ mỗi câu trong tập dữ liệu sẽ được chuyển thành một vector đầu vào cho mô hình học máy. Vector đầu vào sẽ là một vector nhị phân với chiều thứ i là: 
+\begin{itemize}
+\item (1): tức là câu đó có chứa từ i trong tập từ điển
+\item (0): tức la câu đó không có chứa từ i trong tập từ điển
+\end{itemize}
+
+Trên thực tế với bộ train ban đầu từ điển bao gồm 910 từ vậy kích thước dữ liệu train đầu vào cho mô hình học máy sẽ là 100x910
+
 \chapter{Các phương pháp phân loại}
 \section{Naive Bayes}
 \subsection{Cơ sở lý thuyết}
@@ -134,20 +148,20 @@ navie-bayes more data & 75.375\\ \hline
 
 \section{K-nearest neighbors}
 Với phương pháp KNN bọn em thực hiện chọn tham số mô hình (k,độ đo). 
-\begin{longtable}{|c|c|c|c|c|c|}
+\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
-Hàm khoảng cách & k=1 & k=3 & k=5 & k=7 & k=9\\
+Hàm khoảng cách & k=1 &k2& k=3&k=4 & k=5 &k=6 & k=7&k=8 & k=9\\
 \hline
-euclidean & 0.561 &0.495 &0.485&0.4955&0.485 \\
+euclidean & 0.561&0.577 &0.495 &0.4895&0.485&0.4885&0.4955&0.488&0.485 \\
 \hline 
-jaccard & 0.9 & 0.9095 & 0.905 & 0.8995 & 0.879 \\ \hline
-matching & 0.5655 & 0.4835 &  0.501 &0.4885 & 0.489 \\ \hline 
-dice &0.8825 & 0.904 & 0.902 & 0.8955 & 0.8855 \\ \hline
-kulsinski&  0.869 &0.8935& 0.878& 0.882 &0.875 \\ \hline 
-rogerstanimoto&  0.5865& 0.483& 0.495 &0.4995& 0.487 \\ \hline
-russellrao&  0.8495& 0.8695& 0.8505  &0.8505& 0.8505 \\ \hline 
-sokalmichener& 0.5595& 0.505 &0.483 &0.492 &0.4755 \\ \hline 
-sokalsneath& 0.896& 0.919  & 0.9075& 0.892 & 0.889 \\ \hline
+jaccard & 0.9 &0.884& 0.9095 &9215& 0.905 & 0.9165& 0.8995 &0.9115& 0.879 \\ \hline
+matching & 0.5655 &0.576& 0.4835 & 0.5015&  0.501 & 0.4945&0.4885 &0.47& 0.489 \\ \hline 
+dice &0.8825 &0.8985& 0.904 &0.9205&  0.902 & 0.912& 0.8955 &0.8945& 0.8855 \\ \hline
+kulsinski&  0.869 & 0.828& 0.8935&0.8905&  0.878& 0.884& 0.882 & 0.883& 0.875 \\ \hline 
+rogerstanimoto&  0.5865& 0.543& 0.483&0.5015& 0.495 & 0.485&0.4995& 0.4845& 0.487 \\ \hline
+russellrao&  0.8495&0.786& 0.8695& 0.8205&0.8195 &0.8505  &0.8505& 0.836& 0.8505 \\ \hline 
+sokalmichener& 0.5595&0.553& 0.505 & 0.4865 &0.483 &0.474 &0.492& 0.4995 &0.4755 \\ \hline 
+sokalsneath& 0.896& 0.8735& 0.919 &0.9125 & 0.9075&0.920& 0.892 & 0.9135& 0.889 \\ \hline
 \end{longtable}
 
 Một vài định nghĩa sử dụng cho các hàm khoảng cách dưới đây:
@@ -170,6 +184,12 @@ Một vài định nghĩa sử dụng cho các hàm khoảng cách dưới đây
 \item “russellrao”	RussellRaoDistance	NNZ / N
 \item “sokalmichener”	SokalMichenerDistance	2 * NNEQ / (N + NNEQ)
 \item “sokalsneath”	SokalSneathDistance	NNEQ / (NNEQ + 0.5 * NTT)
+\end{itemize}
+\section{Kết luận}
+Dựa trên kết quả thu được bọn em quyết định lựa chọn 2 mô hình là: 
+\begin{itemize}
+\item Naive Bayes Normal
+\item KNN Jaccard với k=3
 \end{itemize}
 \begin{thebibliography}{9}
 
