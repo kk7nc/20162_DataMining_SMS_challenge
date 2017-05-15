@@ -79,13 +79,21 @@ Phan Anh Tú &   20134501 & CNTT2.01-K58\\
 %\listoftables
 \listoffigures
 \chapter{Tổng quan}
-\section{Dữ liệu đầu vào}
-Đầu vào của dữ liệu là tập \\
-Trong challenge này, bọn em thử nghiệm qua nhiều phương pháp (SVM,Naive Bayes,KNN,Random forest, Word2Vec,...). Nhưng hai phương pháp cho hiệu quả nhất đó là Naive Bayes và K-nearest neighbors vì vậy trong báo cáo này bọn em sẽ trình bày 2 phương pháp trên.
+Trong challenge này, bọn em thử nghiệm qua nhiều phương pháp (SVM, Naive Bayes, KNN, Random forest, Word2Vec,...). Nhưng hai phương pháp cho hiệu quả nhất đó là Naive Bayes và K-nearest neighbors vì vậy trong báo cáo này bọn em sẽ trình bày 2 phương pháp trên.
+\section{Bài toán lọc tin nhắn Spam}
+Tin nhắn spam là những tin nhắn vô nghĩa mà người sử dụng cảm thấy khó chịu khi nhận nó. \\
+
+Mô hình nhận đầu vào là một tin nhắn văn bản và trả về kết quả dự đoán xem tin nhắn đó có phải là tin rác hoặc không? Độ chính xác của mô hình số lượng tin được dự đoán đúng.
+\section{Dữ liệu}
+Đầu vào của dữ liệu là tập các tin nhắn đã được chuẩn hóa(bỏ dấu,loại bỏ thông tin thừa...). \\
 \begin{itemize}
-\item Phương pháp
+\item Kích thước dữ liệu 100 tin tập train, 300 tin tập test.
+\item Tập train gồm 2 nhãn 1(spam),-1(harm)
 \end{itemize}
+
 \section{Chuẩn hóa vector đầu vào cho bài toán phân loại}
+Dựa vào tập train đầu vào chúng em build một từ điển gốm những từ xuất phát trong tập train. Vector đầu vào sẽ là một vector nhị phân thể hiện chiều thứ i của vector bắng 1 tức là câu đó có chứa từ i, ngược lại giá trị băng 0.
+
 \chapter{Các phương pháp phân loại}
 \section{Naive Bayes}
 \subsection{Cơ sở lý thuyết}
