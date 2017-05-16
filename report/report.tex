@@ -77,10 +77,10 @@ Phan Anh Tú &   20134501 & CNTT2.01-K58\\
 \pdfbookmark{\contentsname}{toc}
 \tableofcontents
 %\listoftables
-\listoffigures
+%\listoffigures
 
 \chapter{Tổng quan}
-Trong challenge này, bọn em thử nghiệm qua nhiều phương pháp (SVM, Naive Bayes, KNN, Random forest, Word2Vec,...). Nhưng hai phương pháp cho hiệu quả nhất đó là Naive Bayes và K-nearest neighbors vì vậy trong báo cáo này bọn em sẽ trình bày 2 phương pháp trên.
+Trong challenge này, chúng em thử nghiệm qua nhiều phương pháp (SVM, Naive Bayes, KNN, Random forest, Word2Vec,...). Nhưng hai phương pháp cho hiệu quả nhất đó là Naive Bayes và K-nearest neighbors vì vậy trong báo cáo này bọn em sẽ trình bày 2 phương pháp trên.
 \section{Bài toán lọc tin nhắn Spam}
 Tin nhắn spam là những tin nhắn vô nghĩa mà người sử dụng cảm thấy khó chịu khi nhận nó. \\
 
@@ -92,33 +92,130 @@ Mô hình nhận đầu vào là một tin nhắn văn bản và trả về kế
 \item Tập train gồm 2 nhãn 1(spam),-1(harm)
 \end{itemize}
 
-\section{Chuẩn hóa vector đầu vào cho bài toán phân loại}
-Dựa vào tập train đầu vào chúng em build một từ điển gốm những từ xuất phát trong tập train. Từ mỗi câu trong tập dữ liệu sẽ được chuyển thành một vector đầu vào cho mô hình học máy. Vector đầu vào sẽ là một vector nhị phân với chiều thứ i là: 
+\section{Biểu diễn vector đầu vào cho bài toán phân loại}
+Chúng em đã thử nghiệm nhiều phương pháp biểu diễn một tin nhắn dạng text thành một vector số để máy tính có thể tính toán như: tách từ bởi khoảng trắng, n-gram, word2vec.
+\subsection{Tách từ}
+Dựa vào tập train đầu vào chúng em xây dựng một từ điển gồm những từ xuất hiện trong tập train bằng cách duyệt qua tất các tin nhắn trong tập train và tách các từ bằng các khoảng trắng. Từ mỗi câu trong tập dữ liệu sẽ được chuyển thành một vector đầu vào cho mô hình học máy. Vector đầu vào sẽ là một vector nhị phân có số chiều bằng số từ của từ điển và thành phần thứ i của vector: 
 \begin{itemize}
-\item (1): tức là câu đó có chứa từ i trong tập từ điển
-\item (0): tức la câu đó không có chứa từ i trong tập từ điển
+\item = 1: tức là câu đó có chứa từ i trong tập từ điển
+\item = 0: tức la câu đó không có chứa từ i trong tập từ điển
 \end{itemize}
 
 Trên thực tế với bộ train ban đầu từ điển bao gồm 910 từ vậy kích thước dữ liệu train đầu vào cho mô hình học máy sẽ là 100x910
+
+\subsection{N-gram}
+Duyệt qua tất cả các tin nhắn, mỗi một cụm n ký tự sẽ tạo thành một từ trong từ điển (các từ trong từ điển khác nhau). Tương tự như cách tách từ bởi khoảng trắng, duyệt qua tất cả các tin nhắn và xây dựng một bộ từ điển. Một tin nhắn sẽ được biểu diễn bằng một vector nhị phân có số chiều bằng kích thước của từ điển, cứ mỗi cụm n từ xuất hiện trong tin nhắn dạng text thì tại vị trí của từ đó trong từ điển thành phần của vector biểu diễn tin nhắn có giá trị bằng 1, các thành phần còn lại sẽ có giá trị 0.
+
+\subsection{Word2vec}
+Phương pháp này sẽ biểu diễn mỗi từ thành một vector có giá trị là các số thực trong khoảng [0,1]
+\subsubsection{Mô hình Continuous Bag of Words Model (CBOW)}
+Mô hình này sẽ đoán "\emph{center word}" dựa trên ngữ cảnh của nó trong câu (\emph{context}). Ví dụ cần dự đoán từ "\emph{jumbed}" dựa vào tập các từ \{ "\emph{the}", "\emph{cat}", "\emph{over}", "\emph{puddle}" \}.
+\par Đầu tiên cần khởi tạo 2 ma trận tham số $V \in \mathbb{R}^{n \times |D|}$, $U \in \mathbb{R}^{|V| \times n}$. $V$ là ma trận mà cột i là embedded vector $n$ chiều của từ thứ i trong từ điển khi nó được input vào mô hình, $U$ là ma trận mà hàng thứ i là embedded vector $n$ chiều của từ thứ i khi output ra khỏi mô hình.($n$ là số chiều của word vector mong muốn). Mô hình cần học cả hai ma trận $U$ và $V$ để có thể biểu diễn được các từ thành các vector. Để học được hai ma trận $U$, $V$ cần trải qua các bước: 
+\begin{enumerate}
+\item Tạo các one-hot vector cho các từ trong tập context ($x^{c-m}, ..., x^{c-1}, x^{c+1}, ..., x^{c+m}$) (với $c$ là vị trí của center word trong câu, $m$ là kích thước của context ($C$))
+\item Tính các embedded word vector cho mỗi context ($v_{c-m} = Vx^{x-m}, v{c-m+1} = Vx^{c-m+1}, ...., v_{c+m} = Vx^{c+m}$).
+\item Tính trung bình các vector $\hat{v} = \frac{v_{c-m} + v_{c-m+1} + .... + v_{c+m}}{2m}$
+\item Sinh ra vector đánh giá $z = U\hat{v}$
+\item Tính vector đầu ra $\hat{y} = softmax(z)$
+\item Tính lỗi của vector đầu ra so với vector của center word thực tế sử dụng hàm cross-entropy
+$$H(\hat{y},y) = -\sum_{j=1}^{|V|} y_jlog(\hat{y}_j)$$
+\item Update các ma trận $U, V$ để cực tiểu hóa hàm lỗi.
+\end{enumerate}
+
 
 \chapter{Các phương pháp phân loại}
 \section{Naive Bayes}
 \subsection{Cơ sở lý thuyết}
 Mục đích của các phương pháp học máy là học một hàm dựa trên dữ liệu cho trước (tập train) và dùng hàm đó để dự đoán dữ liệu tương lai (trong bài toán phân loại là gán nhãn lớp cho dữ liệu). Phương pháp Naive-Bayes giả thiết dữ liệu của bài toán cần phân loại được sinh ra theo một phân bố xác suất nào đó. 
 \subsubsection{Các khái niệm cơ bản vễ xác suất}
-Giả sử chugns ta có một sự kiện mà kết quả của nó mang tính ngẫu nhiên.
+Giả sử chúng ta có một thí nghiệm $X$ (ví dụ: tung một con xúc sắc) mà kết quả của nó mang tính ngẫu nhiên.
 \begin{itemize}
-\item 
-\end{itemize}
-\subsubsection{Định lý Bayes}
-Cho hai biến ngẫu nhiên X, Y.Ta định nghĩa:
-\begin{itemize}
-\item Xác suất hợp của hai biến X, Y: $Pr(X=x, Y=Y)$ là xác suất để 
+\item \emph{Không gian các khả năng $S$} là tập hợp tất cả các kết quả có thể xảy ra khi thí nghiệm $X$. Ví dụ $S = \{1,2,3,4,5,6\}$ đối với thí nghiệm tung con xúc sắc.
+\item \emph{Sự kiện $E$} là một tập con của không gian các khả năng của thí nghiệm $X$. Ví dụ $E=\{1,3,5\}$ kết quả con xúc sắc đổ ra là một số lẻ.
+\item \emph{Không gian các sự kiện W} là không gian (thế giới) mà các kết quả của sự kiện có thể xảy ra. Ví dụ $W$ bao gồm tất cả các lần tung xúc sắc.
+\item \emph{Biến ngẫu nhiên A} biểu diễn (diễn đạt) một sự kiện, và có một mức độ về khả năng xảy ra sự kiện này.
+\item $P(A)$ là tỉ lệ phần không gian mà trong đó $A$ đúng trên không gian các của tất cả các giá trị có thể xảy ra của A) 
+\item \emph{Xác suất đồng thởi (kết hợp) $P(A,B)$} là tỉ lệ của không gian mà trong đó $A$ đúng và $B$ đúng trên toàn bộ không gian của sự kiện $A$ và $B$
+\item \emph{Xác suất có điều kiện $P(A|B)$} là tỉ lệ không gian mà trong đó $A$ đúng khi biết $B$ 
+$$P(A|B) = \frac{P(A,B)}{P(B)}$$
+\item Hai sự kiện $A$ và $B$ được gọi là độc lập về xác suất nếu xác suất của sự kiện $A$ là như nhau đối với tất cả các trường hợp: Khi sự kiện $B$ xảy ra hoặc khi sự kiện $B$ không xảy ra hoặc không có thông tin (không biết gì) về việc xảy ra của sự kiện $B$
+\item \emph{Xác suất có điều kiện với nhiều biến $P(A|B,C)$} là xác suất của $A$ khi đã biết $B$ và $C$
+\item Hai biến $A$ và $C$ được gọi là độc lập có điều kiện với biến $B$ nếu $P(A|B,C) = P(A|B)$
+\item \emph{Quy tắc chuỗi} $P(A_1,A_2,...,A_n) = P(A_1|C).P(A_2|C)...(P(A_n|C)$ nếu $A_1,A_2,...,A_n$ là độc lập có điều kiện với $C$    
 \end{itemize}
 
-\section{K-nearest neighbors}
+\subsubsection{Định lý Bayes}
+$$P(h|D) = \frac{P(D|h).P(h)}{P(D)}$$
+\begin{itemize}
+\item $P(h)$: Xác suất của giả thiết $h$
+\item $P(D)$: Xác suất của việc quan sát được dữ liệu D.
+\item $P(D|h)$: Xác suất (có điều kiện) của việc quan sát được dữ liệu $D$, nếu biết giả thiết $h$ là đúng.
+\item $P(h|D)$: Xác suất của giả thiết $h$ là đúng, nếu quan sát được dữ liệu $D$.
+\end{itemize}
+
+\subsection{Phân loại Naive-Bayes}
+Biểu diễn bài toán phân loại:
+\begin{itemize}
+\item Một học $D_train$, trong đó mỗi ví dụ học $x$ được biểu diễn là một vector $n$ chiều ($x_1,x_2, ..., x_n$)
+\item Một tập xác định các nhãn lớp $C = \{c_1, c_2, ..., c_m\}$
+\item Với một ví dụ $z$, thì $z$ sẽ được phân vào lớp nào?
+\end{itemize}
+\par Mục tiêu: Xác định phân lớp có thể (phù hợp) nhất đối với $z$ tức 
+xác định:
+$$c = \displaystyle arg\max_{c_i \in C}P(c_i|z) =\displaystyle arg\max_{c_i \in C}P(c_i|z_1,z_2,...,z_n) $$
+\par Theo định lý Bayes ta có:
+$$c = \displaystyle arg\max_{c_i \in C}\frac{P(z_1,z_2,...,z_n|c_i).P(c_i)}{P(z_1,z_2,...,z_n)}$$
+\par Do $P(z_1,z_2,...,z_n)$ là như nhau đối với mọi nhãn lớp $c_i$. Để tìm nhãn lớp có thể nhất đối với $z$ ta cần tìm 
+$$c = \displaystyle arg\max_{c_i \in C}P(z_1,z_2,...,z_n|c_i).P(c_i)$$
+\par Giả sử các thuộc tính là độc lập có điều kiện đối với các nhãn lớp $c_i$, ta có:
+$$P(z_1,z_2,...,z_n|c_i).P(c_i) = \prod_{j=1}^n P(z_j|c_i)$$
+\par Như vậy phương pháp phân loại Naive-Bayes sẽ tìm nhãn lớp $c$ có thể nhất đối với $z$ thỏa mãn:
+$$c = \displaystyle arg\max_{c_i \in C}P(c_i).\prod_{j=1}^n P(z_j|c_i)$$
+\subsection{Giải thuật}
+\begin{itemize}
+\item Giai đoạn học
+\begin{itemize}
+\item Tính giá trị xác suất trước $P(c_i)$ đối với mỗi nhãn lớp có thể $c_i \in C$
+\item Tính giá trị xác suất xảy ra của mỗi giá trị thuộc tính $x_j$ đối với mỗi nhãn lớp $c_i$ : $P(x_j|c_i)$
+\end{itemize}
+\item Giai đoạn phân lớp, đối với một ví dụ mới $z$
+\begin{itemize}
+\item Đối với mỗi phân lớp $c_i \in C$, tính giá trị của biểu thức:
+$$P(c_i).\prod_{j=1}^n P(z_j|c_i)$$
+\item Xác định phân lớp của $z$ là lớp có thể nhất $c*$
+$$c* = \displaystyle arg\max_{c_i \in C}P(c_i).\prod_{j=1}^n P(z_j|c_i)$$   
+\end{itemize}
+\end{itemize}
+
+\section{K-nearest neighbors (KNN)}
 \subsection{Cơ sở lý thuyết}
-\chapter{Đánh giá}
+Nếu như trong phương pháp phân loại Naive-Bayes có giả sử hàm mục tiêu tuân theo một phân bố xác suất nào đó thì trong phương pháp KNN không có giả sử gì về hàm mục tiêu. Ý tưởng chính của phương pháp là trong quá trình học chỉ lưu lại các dữ liệu huấn luyện và việc dự đoán cho một quan sát mới sẽ dựa vào các hàng xóm gần nhất trong tập học. Do đó KNN là một phương pháp phi tham số.
+\par Vậy thế nào là hàng xóm gần nhất, dựa vào đâu để xác định hai đối tượng là gần nhau; Và chọn bao nhiêu hàng xóm để có thể dự đoán (gán nhãn) cho một ví dụ mới. Hai thành phần chính của phương pháp phân loại KNN là:
+\begin{itemize}
+\item Độ đo tương đồng giữa các đối tượng.
+\item Số lượng các hàng xóm sẽ dùng vào việc phán đoán (phân loại)
+\end{itemize} 
+
+\subsection{Giải thuật}
+\begin{itemize}
+\item Mỗi ví dụ học $x$ được biểu diễn bởi 2 thành phần:
+\begin{itemize}
+\item Mô tả của ví dụ $x = (x_1, x_2, x_3, ..., x_n)$ trong đó $x_i \in \mathbb{R}$
+\item Nhãn lớp: $c \in C$, với $C$ là tập các nhãn lớp được xác định trước
+\end{itemize}
+\item Giai đoạn học
+\begin{itemize}
+\item Đơn giản là lưu lại các ví dụ học trong tập hoc $D$
+\end{itemize}
+\item Giai đoạn phân lớp: Để phân lớp cho một ví dụ mới $z$
+\begin{itemize}
+\item Với mỗi ví dụ học $x \in D$, tính khoảng cách giữa $x$ và $z$
+\item Xác định tập $NB(z)$ các láng giềng gần nhất của $z$ (Gồm $k$ ví dụ học trong $D$ gần nhất với $z$ tính theo một hàm khoảng cách $d$)
+\item Phân $z$ và lớp chiếm số đông trong số các lớp của các ví dụ trong $NB(z)$
+\end{itemize}
+\end{itemize}
+
+\chapter{Thực nghiệm}
 Vì tập dữ liệu khá nhỏ nên phương pháp bọn em sử dụng để đánh giá mô hình là : repeated hold-out. Chúng em thực hiện phương pháp hold out(80 train-20 test) 100 lần sau đó tính trung bình để đánh giá mô hình học máy.\\
 
 Về lựa chọn tham số cho từng phương pháp học máy bọn em sử dụng phương pháp hold-out. Cụ thể sẽ được trình bày trong hai mục dưới đây
@@ -192,8 +289,7 @@ Dựa trên kết quả thu được bọn em quyết định lựa chọn 2 mô
 \item KNN Jaccard với k=3
 \end{itemize}
 \begin{thebibliography}{9}
-
-
+\bibitem{3} \url{http://cs224d.stanford.edu/syllabus.html}
 \end{thebibliography}
 
 
